@@ -9,15 +9,15 @@ from curl import Urls
 class TestCreateUser:
     data_empty_field = [
         {'email': '',
-         'password': GenerateUserCredentials.password,
-         'name': GenerateUserCredentials.name
+         'password': GenerateUserCredentials.get_password,
+         'name': GenerateUserCredentials.get_name
          },
-        {'email': GenerateUserCredentials.email,
+        {'email': GenerateUserCredentials.get_email,
          'password': '',
-         'name': GenerateUserCredentials.name
+         'name': GenerateUserCredentials.get_name
          },
-        {'email': GenerateUserCredentials.email,
-         'password': GenerateUserCredentials.password,
+        {'email': GenerateUserCredentials.get_email,
+         'password': GenerateUserCredentials.get_password,
          'name': ''
          }
     ]
@@ -25,18 +25,16 @@ class TestCreateUser:
     @allure.title('Проверка успешного создания пользователя')
     @allure.description('При создании курьера передаются все три поля: email, password, name')
     def test_create_user_all_fields_success_create(self):
-        email = GenerateUserCredentials.email
-        password = GenerateUserCredentials.password
-        name = GenerateUserCredentials.name
+        email = GenerateUserCredentials.get_email()
+        password = GenerateUserCredentials.get_password()
+        name = GenerateUserCredentials.get_name()
         payload = {'email': email, 'password': password, 'name': name}
         response = requests.post(Urls.REGISTER_USER, data=payload)
         data = response.json()
         assert response.status_code == 200
         assert data["success"] == True
 
-        # удалим созданного пользователя
-        access_token = data.get("accessToken")
-        requests.delete(f"{Urls.DELETE_USER}", headers={'Authorization': f'{access_token}'})
+
 
 
     @allure.title('Проверка невозможности создания двух одинаковых пользователей')

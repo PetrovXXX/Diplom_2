@@ -1,12 +1,21 @@
 from faker import Faker
 
+import uuid
+
 fake = Faker()
 
-
 class GenerateUserCredentials:
-    email = ('Petrov' + fake.lexify(text='????????????') + '@diplom2.com').lower()
-    password = fake.lexify(text='????????????')
-    name = fake.name()
+    @staticmethod
+    def get_email():
+        return f'petrov_{uuid.uuid4().hex[:8]}@diplom2.com'.lower()
+
+    @staticmethod
+    def get_password():
+        return fake.lexify(text='????????????')
+
+    @staticmethod
+    def get_name():
+        return fake.name()
 
 
 class ExistentUserCredentials:

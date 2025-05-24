@@ -2,7 +2,7 @@ import allure
 import requests
 
 from curl import Urls
-from conftest import create_new_user, create_new_order
+from tests.conftest import create_new_user, create_new_order
 
 
 class TestGetUserOrder:

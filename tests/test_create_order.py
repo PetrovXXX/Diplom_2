@@ -1,7 +1,7 @@
 import allure
 import requests
 
-from conftest import create_new_user
+from tests.conftest import create_new_user
 from data import IngredientsData
 from curl import Urls
 

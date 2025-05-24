@@ -11,9 +11,9 @@ faker = Faker()
 
 @pytest.fixture
 def generate_user_credentials():
-    email = GenerateUserCredentials.email
-    password = GenerateUserCredentials.password
-    name = GenerateUserCredentials.name
+    email = GenerateUserCredentials.get_email()  # Новые данные при каждом вызове
+    password = GenerateUserCredentials.get_password()
+    name = GenerateUserCredentials.get_name()
     return email, password, name
 
 
@@ -22,12 +22,16 @@ def create_new_user(generate_user_credentials):
     email, password, name = generate_user_credentials
     payload = {"email": email, "password": password, "name": name}
     response = requests.post(f"{Urls.REGISTER_USER}", data=payload)
+
+    # Проверяем, что пользователь создан успешно
+    assert response.status_code == 200, f"Ошибка создания пользователя: {response.text}"
+    assert "accessToken" in response.json(), "Токен не получен"
+
     data = response.json()
-    user_credentials = [email, password, name]
+    yield [email, password, name], data  # Возвращаем данные для теста
 
-    yield user_credentials, response.json()
-
-    access_token = data.get("accessToken")
+    # Удаление пользователя после теста
+    access_token = data["accessToken"]
     requests.delete(f"{Urls.DELETE_USER}", headers={'Authorization': f'{access_token}'})
 
 
